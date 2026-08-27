@@ -4,13 +4,8 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-if [[ -n "${CL_REPOSITORY_CLIENT_DIR:-}" && -f "${CL_REPOSITORY_CLIENT_DIR}/cl-repository-client.asd" ]]; then
-  printf 'client already at %s\n' "${CL_REPOSITORY_CLIENT_DIR}"
-  exit 0
-fi
-
-if find "${ROOT}/.cl-repository" -name 'cl-repository-client.asd' -print -quit 2>/dev/null | grep -q .; then
-  printf 'client already in %s/.cl-repository\n' "${ROOT}"
+if find "${CL_REPOSITORY_DEST:-${ROOT}/.cl-repository}" -name 'cl-repository-client.asd' -print -quit 2>/dev/null | grep -q .; then
+  printf 'client already in %s\n' "${CL_REPOSITORY_DEST:-${ROOT}/.cl-repository}"
   exit 0
 fi
 
