@@ -48,6 +48,9 @@
              (format t "~&-- agent usecases~%")
              (with-demo-loop
                (dolist (uc usecases)
-                 (run-usecase agent uc :max-steps 6 :max-tokens 192)))
+                 (handler-case
+                     (run-usecase agent uc :max-steps 6 :max-tokens 256)
+                   (error (e)
+                     (format t "~&usecase ~a FAIL: ~a~%" (getf uc :id) e)))))
              t))
       (llm-protocol-vllm-cpp:close-vllm-cpp-backend backend))))

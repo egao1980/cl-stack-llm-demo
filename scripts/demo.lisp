@@ -15,6 +15,7 @@
 
 (in-package #:cl-user)
 
+(format t "~&demo: model=~s~%" (cl-stack-llm-demo:find-lmstudio-model))
 (cl-stack-llm-demo:run-live)
 (format t "~&DEMO OK~%")
 (uiop:quit 0)

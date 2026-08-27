@@ -25,7 +25,14 @@ CL_SOURCE_REGISTRY="$PWD/../:" ros -e '(asdf:test-system "cl-stack-llm-demo")' -
 
 ## Live (Mac + LM Studio GGUF)
 
-Picks the smallest chat GGUF under `~/.lmstudio/models` (prefers **Nemotron 3 Nano 4B Q4_K_M**, skips embed/OCR/mmproj). Override with `VLLM_MODEL_PATH`.
+Picks an LM Studio GGUF this **libvllm overlay can actually load**. `vllm-cpp:0.1.1` darwin only speaks GGUF families `qwen35` / `qwen35moe` / `qwen3next` / `deepseek4` / `muse-glimmer`. Local Nemotron (`nemotron_h` + ggml type 6), Gemma, and OCR files are skipped. Prefers **Qwen3.5-0.8B Q4_K_M** (~503MB). Override with `VLLM_MODEL_PATH`.
+
+```bash
+# if you only have Nemotron/Gemma downloaded:
+mkdir -p ~/.lmstudio/models/lmstudio-community/Qwen3.5-0.8B-GGUF
+curl -L -o ~/.lmstudio/models/lmstudio-community/Qwen3.5-0.8B-GGUF/Qwen3.5-0.8B-Q4_K_M.gguf \
+  https://huggingface.co/lmstudio-community/Qwen3.5-0.8B-GGUF/resolve/main/Qwen3.5-0.8B-Q4_K_M.gguf
+```
 
 Needs `libvllm` (OCI overlay `vllm-cpp:0.1.1` darwin/arm64, or `VLLM_CPP_NATIVE`).
 
@@ -35,7 +42,8 @@ oras pull ghcr.io/egao1980/cl-systems/vllm-cpp:0.1.1 --platform darwin/arm64 -o 
 tar -xzf /tmp/vllm-cpp-oci/native-library.tar.gz -C /tmp/vllm-cpp-native
 cp /tmp/vllm-cpp-native/vllm-cpp-0.1.1/native/* ../vllm-cpp/native/
 
-CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/demo.lisp
+CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/smoke.lisp   # generate pong
+CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/demo.lisp    # generate + sampling + agent
 ```
 
 What it runs:

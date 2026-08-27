@@ -1,5 +1,10 @@
 (in-package #:cl-stack-llm-demo/tests)
 
+(deftest salvage-truncated-json
+  (let ((obj (decode-args "{\"customer\":\"Sam\",\"issue\":\"late\",\"facts\":")))
+    (ok (equal "Sam" (mcp-protocol:param obj "customer")))
+    (ok (equal "late" (mcp-protocol:param obj "issue")))))
+
 (deftest fixture-orders
   (ok (equal "Sam Lee" (mcp-protocol:param (lookup-order "1001") "customer")))
   (ok (equal "unknown order" (mcp-protocol:param (lookup-order "9999") "error")))

@@ -1,10 +1,25 @@
 (in-package #:cl-stack-llm-demo)
 
+(defun %salvage-json (s)
+  "Pull a few quoted keys out of truncated tool-call JSON."
+  (let ((out (mcp-protocol:json-object "raw" s)))
+    (dolist (key '("order_id" "orderId" "id" "customer" "issue" "facts" "tone" "topic"))
+      (let ((needle (format nil "\"~a\"" key)))
+        (let ((p (search needle s :test #'char-equal)))
+          (when p
+            (let* ((colon (position #\: s :start (+ p (length needle))))
+                   (q1 (and colon (position #\" s :start (1+ colon))))
+                   (q2 (and q1 (position #\" s :start (1+ q1)))))
+              (when (and q1 q2)
+                (setf (gethash key out) (subseq s (1+ q1) q2))))))))
+    out))
+
 (defun decode-args (args)
   (cond
     ((hash-table-p args) args)
     ((and (stringp args) (plusp (length (string-trim '(#\Space #\Tab #\Newline) args))))
-     (stack-json:decode args))
+     (handler-case (stack-json:decode args)
+       (error () (%salvage-json args))))
     (t (mcp-protocol:json-object))))
 
 (defun %arg (obj key &optional default)

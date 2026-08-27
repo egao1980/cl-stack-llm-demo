@@ -74,7 +74,7 @@
     (t
      (format t "~&   event ~s~%" kind))))
 
-(defun run-usecase (agent usecase &key (max-steps 6) (max-tokens 192))
+(defun run-usecase (agent usecase &key (max-steps 6) (max-tokens 256))
   (format t "~%~%######## ~a — ~a~%"
           (getf usecase :id) (getf usecase :title))
   (format t "user: ~a~%" (getf usecase :user))

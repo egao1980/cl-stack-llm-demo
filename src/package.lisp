@@ -16,6 +16,8 @@
            #:with-demo-loop
            #:find-lmstudio-model
            #:list-lmstudio-ggufs
+           #:gguf-architecture
+           #:*vllm-gguf-architectures*
            #:run-usecase
            #:run-mock
            #:run-live
