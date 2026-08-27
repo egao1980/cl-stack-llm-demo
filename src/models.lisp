@@ -16,9 +16,10 @@
   '("qwen35moe" "qwen3next" "qwen35" "deepseek4" "muse-glimmer"))
 
 (defparameter *preferred-gguf-names*
-  '("Qwen3.5-0.8B-Q4_K_M.gguf"
-    "Qwen3.5-0.8B-Q4_0.gguf"
-    "Qwen3.5-2B-Q4_K_M.gguf"))
+  '("Qwen3.5-2B-Q4_K_M.gguf"
+    "Qwen3.5-2B-Q4_0.gguf"
+    "Qwen3.5-0.8B-Q4_K_M.gguf"
+    "Qwen3.5-0.8B-Q4_0.gguf"))
 
 (defun %ascii-octets (s)
   (map '(vector (unsigned-byte 8)) #'char-code s))

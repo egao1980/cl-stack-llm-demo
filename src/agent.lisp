@@ -83,7 +83,8 @@
               :settings (ai-agent-protocol:make-agent-settings
                          :llm (llm-protocol:make-llm-settings
                                :temperature 0 :max-tokens max-tokens)
-                         :max-steps max-steps)
+                         :max-steps max-steps
+                         :extra '(:first-tool-choice :required))
               :on-event #'on-event)))
     (format t "~&desk: ~a~%" (or (ai-agent-protocol:agent-run-text run) ""))
     (dolist (inv (ai-agent-protocol:agent-run-invocations run))

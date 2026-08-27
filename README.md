@@ -25,13 +25,13 @@ CL_SOURCE_REGISTRY="$PWD/../:" ros -e '(asdf:test-system "cl-stack-llm-demo")' -
 
 ## Live (Mac + LM Studio GGUF)
 
-Picks an LM Studio GGUF this **libvllm overlay can actually load**. `vllm-cpp:0.1.1` darwin only speaks GGUF families `qwen35` / `qwen35moe` / `qwen3next` / `deepseek4` / `muse-glimmer`. Local Nemotron (`nemotron_h` + ggml type 6), Gemma, and OCR files are skipped. Prefers **Qwen3.5-0.8B Q4_K_M** (~503MB). Override with `VLLM_MODEL_PATH`.
+Picks an LM Studio GGUF this **libvllm overlay can actually load**. `vllm-cpp:0.1.1` darwin only speaks GGUF families `qwen35` / `qwen35moe` / `qwen3next` / `deepseek4` / `muse-glimmer`. Local Nemotron (`nemotron_h` + ggml type 6), Gemma, and OCR files are skipped. Prefers **Qwen3.5-2B Q4_K_M** (~1.2GB; 0.8B is the fallback). Override with `VLLM_MODEL_PATH`.
 
 ```bash
 # if you only have Nemotron/Gemma downloaded:
-mkdir -p ~/.lmstudio/models/lmstudio-community/Qwen3.5-0.8B-GGUF
-curl -L -o ~/.lmstudio/models/lmstudio-community/Qwen3.5-0.8B-GGUF/Qwen3.5-0.8B-Q4_K_M.gguf \
-  https://huggingface.co/lmstudio-community/Qwen3.5-0.8B-GGUF/resolve/main/Qwen3.5-0.8B-Q4_K_M.gguf
+mkdir -p ~/.lmstudio/models/lmstudio-community/Qwen3.5-2B-GGUF
+curl -L -o ~/.lmstudio/models/lmstudio-community/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf \
+  https://huggingface.co/lmstudio-community/Qwen3.5-2B-GGUF/resolve/main/Qwen3.5-2B-Q4_K_M.gguf
 ```
 
 Needs `libvllm` (OCI overlay `vllm-cpp:0.1.1` darwin/arm64, or `VLLM_CPP_NATIVE`).

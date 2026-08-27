@@ -8,7 +8,8 @@
 (deftest fixture-orders
   (ok (equal "Sam Lee" (mcp-protocol:param (lookup-order "1001") "customer")))
   (ok (equal "unknown order" (mcp-protocol:param (lookup-order "9999") "error")))
-  (ok (equal "password-reset" (mcp-protocol:param (lookup-kb "password-reset") "topic"))))
+  (ok (equal "password-reset" (mcp-protocol:param (lookup-kb "password-reset") "topic")))
+  (ok (equal "password-reset" (mcp-protocol:param (lookup-kb "password reset") "topic"))))
 
 (deftest mcp-sampling-draft
   (let* ((sample (make-mock-llm-backend :prefix "DRAFT: "))

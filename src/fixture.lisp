@@ -71,11 +71,18 @@
          (row (gethash id *orders*)))
     (or row (mcp-protocol:json-object "error" "unknown order" "order_id" id))))
 
+(defun %slug (s)
+  (map 'string
+       (lambda (c)
+         (if (member c '(#\Space #\_) :test #'char=) #\- c))
+       (string-downcase (string-trim '(#\Space #\Tab) (princ-to-string (or s ""))))))
+
 (defun lookup-kb (topic)
-  (let* ((key (string-downcase (string-trim '(#\Space #\Tab) (princ-to-string (or topic "")))))
+  (let* ((key (%slug topic))
          (row (or (gethash key *kb*)
                   (loop for k being the hash-keys of *kb*
-                        when (search key k) return (gethash k *kb*)))))
+                        when (or (search key k) (search k key))
+                          return (gethash k *kb*)))))
     (or row (mcp-protocol:json-object "error" "no article" "topic" key))))
 
 (defparameter *desk-instructions*
@@ -83,8 +90,9 @@
 
 Rules:
 - Never invent order facts, dates, refunds, or tracking.
+- Do not ask the customer for information you can look up.
 - If the customer mentions an order id, call lookup_order first.
-- For how-to questions (password, returns), call lookup_kb.
+- For how-to questions (password, returns), call lookup_kb first.
 - After you have verified facts, call draft_reply with customer, issue, and the JSON facts.
 - Then send the customer the draft. One short paragraph of your own is fine.")
 
