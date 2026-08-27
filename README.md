@@ -13,9 +13,9 @@ LM Studio GGUF ──► vllm.cpp ──► llm-protocol-vllm-cpp
      agent "desk" ── lookup_order / lookup_kb (CL) + draft_reply (MCP)
 ```
 
-`cl-stack-llm-demo` itself does **not** depend on `vllm-cpp` (CI would pull the linux/amd64 CUDA overlay). Live path is `cl-stack-llm-demo/vllm`.
+`cl-stack-llm-demo` itself does **not** depend on `vllm-cpp` (that would pull the linux/amd64 CUDA overlay). Live path is `cl-stack-llm-demo/vllm`. Local-only — no GitHub Actions.
 
-## Mock (CI / no GPU)
+## Mock (no GPU)
 
 ```bash
 CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/run-mock.lisp
