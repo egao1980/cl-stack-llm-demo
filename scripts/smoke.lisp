@@ -1,4 +1,8 @@
-;;;; Load vllm.cpp + one short generate. Used to fail-fast before the full demo.
+;;;; Load vllm.cpp + one short generate.
+;;;;   ./scripts/setup-client.sh && ros -l scripts/install.lisp
+;;;;   ros -l scripts/smoke.lisp
+
+(load (merge-pathnames "bootstrap.lisp" *load-truename*))
 
 (setf *debugger-hook*
       (lambda (c h)
