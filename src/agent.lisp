@@ -121,8 +121,8 @@
 (defun make-demo-stack (&key agent-backend sample-backend)
   (let* ((sample (or sample-backend agent-backend))
          (client (make-host-client :backend sample))
-         (server (make-support-desk-server))
-         (src (ai-agent-protocol/mcp:make-mcp-tool-source server))
+         (server (make-support-desk-server :host-client client))
+         (src (make-instance 'desk-mcp-source :peer server))
          (agent (make-desk-agent :backend agent-backend :tools (list src))))
     (values agent server client)))
 

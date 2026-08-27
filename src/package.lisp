@@ -7,6 +7,7 @@
            #:decode-args
            #:lookup-order
            #:lookup-kb
+           #:desk-mcp-source
            #:make-support-desk-server
            #:make-host-client
            #:sample-text

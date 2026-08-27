@@ -66,7 +66,17 @@ Write a short support email (~a). 2-4 sentences. No subject line."
       "maxTokens" *max-sample-tokens*
       "temperature" 0.2))))
 
-(defun make-support-desk-server ()
+(defclass desk-mcp-source (ai-agent-protocol/mcp:mcp-tool-source)
+  ()
+  (:documentation "Decode JSON-string tool args before MCP schema validation."))
+
+(defmethod ai-agent-protocol:invoke-tool-async
+    ((source desk-mcp-source) name arguments &key context callback error-callback)
+  (call-next-method source name (decode-args arguments)
+                    :context context :callback callback
+                    :error-callback error-callback))
+
+(defun make-support-desk-server (&key host-client)
   (let ((server (make-instance 'mcp-protocol:mcp-server
                                :name "support-desk"
                                :version "0.1.0"
@@ -90,7 +100,10 @@ Write a short support email (~a). 2-4 sentences. No subject line."
                                           "description" "Verified JSON/text facts only")
         "tone" (mcp-protocol:json-object "type" "string"))
        "required" (vector "issue" "facts"))
-      :handler #'draft-reply-handler))
+      :handler (lambda (args)
+                 ;; Worker threads do not inherit *HOST-CLIENT*.
+                 (let ((*host-client* (or host-client *host-client*)))
+                   (draft-reply-handler args)))))
     server))
 
 (defun make-host-client (&key backend)

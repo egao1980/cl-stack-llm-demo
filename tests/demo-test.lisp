@@ -7,8 +7,8 @@
 
 (deftest mcp-sampling-draft
   (let* ((sample (make-mock-llm-backend :prefix "DRAFT: "))
-         (server (make-support-desk-server))
-         (*host-client* (make-host-client :backend sample))
+         (client (make-host-client :backend sample))
+         (server (make-support-desk-server :host-client client))
          (out (call-draft-reply server
                                 :customer "Sam"
                                 :issue "late keyboard"
@@ -25,10 +25,10 @@
               :key #'agent-invocation-name :test #'equal))
     (ok (find "draft_reply" (agent-run-invocations run)
               :key #'agent-invocation-name :test #'equal))
-    (ok (search "DRAFT:"
-                (agent-invocation-result
-                 (find "draft_reply" (agent-run-invocations run)
-                       :key #'agent-invocation-name :test #'equal))))))
+    (let ((draft (find "draft_reply" (agent-run-invocations run)
+                       :key #'agent-invocation-name :test #'equal)))
+      (ok (eq :done (agent-invocation-status draft)))
+      (ok (search "DRAFT:" (agent-invocation-result draft))))))
 
 (deftest lmstudio-discovery
   (let ((path (find-lmstudio-model)))
