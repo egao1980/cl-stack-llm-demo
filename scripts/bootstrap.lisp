@@ -41,4 +41,17 @@
 #-sbcl
 (asdf:load-system "cl-repository-client" :verbose nil)
 (cl-repository-client/asdf-integration:configure-asdf-source-registry)
-(cl-repository-client/asdf-integration:load-system-init-files)
+
+(defun load-demo-init-files (&key live)
+  "Load cl-repo-init.lisp. Skip vllm-cpp unless LIVE (preload can SIGKILL)."
+  (let ((root (cl-repository-client/installer:systems-root)))
+    (when (probe-file root)
+      (dolist (system-dir (uiop:subdirectories root))
+        (let ((name (car (last (pathname-directory system-dir)))))
+          (unless (and (not live) (string-equal name "vllm-cpp"))
+            (dolist (version-dir (uiop:subdirectories system-dir))
+              (let ((init (merge-pathnames "cl-repo-init.lisp" version-dir)))
+                (when (probe-file init)
+                  (load init))))))))))
+
+(load-demo-init-files)

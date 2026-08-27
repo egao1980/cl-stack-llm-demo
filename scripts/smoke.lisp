@@ -3,6 +3,7 @@
 ;;;;   ros -l scripts/smoke.lisp
 
 (load (merge-pathnames "bootstrap.lisp" *load-truename*))
+(load-demo-init-files :live t)
 
 (setf *debugger-hook*
       (lambda (c h)

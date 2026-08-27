@@ -5,6 +5,7 @@
 ;;;; Optional: VLLM_MODEL_PATH=/path/to/model.gguf  VLLM_DEVICE=auto
 
 (load (merge-pathnames "bootstrap.lisp" *load-truename*))
+(load-demo-init-files :live t)
 
 (setf *debugger-hook*
       (lambda (c h)

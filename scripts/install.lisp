@@ -23,10 +23,7 @@
 
 (%install "cl-stack-llm-demo" :also-tests t)
 (%install "cl-stack-llm-demo/vllm" :also-tests nil)
-;; Second walk after primaries are on the registry so slash secondaries resolve.
-(%install "cl-stack-llm-demo" :also-tests t)
-(%install "cl-stack-llm-demo/vllm" :also-tests nil)
-(cl-repository-client/asdf-integration:load-system-init-files)
+(load-demo-init-files)
 (dolist (sys '("cl-stack-llm-demo" "cl-stack-llm-demo/vllm"))
   (dolist (dep (asdf:system-depends-on (asdf:find-system sys)))
     (let ((n (string-downcase (if (stringp dep) dep (princ-to-string dep)))))
