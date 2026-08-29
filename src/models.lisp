@@ -167,7 +167,7 @@
 
 (defun find-lmstudio-embed-ggufs ()
   "Embed GGUFs for the vllm.cpp smoke. VLLM_EMBED_MODEL_PATH is a comma-separated override."
-  (or (loop for raw in (or (split-csv (%env "VLLM_EMBED_MODEL_PATH")) '())
+  (or (loop for raw in (split-csv (%env "VLLM_EMBED_MODEL_PATH"))
             for p = (probe-file raw)
             when p collect (namestring p))
       (let ((files (list-lmstudio-ggufs)))
