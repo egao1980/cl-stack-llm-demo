@@ -54,3 +54,38 @@
                      (format t "~&usecase ~a FAIL: ~a~%" (getf uc :id) e)))))
              t))
       (llm-backend-vllm-cpp:close-vllm-cpp-backend backend))))
+
+(defun run-vllm-embed-smoke (&key (paths (find-lmstudio-embed-ggufs))
+                               (max-model-len 512))
+  "Native vllm_embed on pooling GGUFs. Load/arch refusals print SKIP, not FAIL."
+  (unless (vllm-cpp:vllm-available-p)
+    (format t "~&-- vllm SKIP: libvllm not available~%")
+    (return-from run-vllm-embed-smoke nil))
+  (unless paths
+    (format t "~&-- vllm SKIP: no embed GGUF (set VLLM_EMBED_MODEL_PATH)~%")
+    (return-from run-vllm-embed-smoke nil))
+  (dolist (path paths)
+    (format t "~&-- vllm embed path=~s~%" path)
+    (handler-case
+        (let ((b (make-vllm-backend :model-path path :max-model-len max-model-len)))
+          (unwind-protect
+               (progn
+                 (let ((r (llm-protocol:embed b "hello from cl-stack")))
+                   (multiple-value-bind (n dim)
+                       (%assert-embed-result r path)
+                     (format t "~&   one: n=~a dim=~a~%" n dim)))
+                 (let ((r (llm-protocol:embed b '("alpha" "beta"))))
+                   (multiple-value-bind (n dim)
+                       (%assert-embed-result r (format nil "~a/many" path))
+                     (unless (= n 2)
+                       (error "expected 2 embeddings, got ~a" n))
+                     (format t "~&   many: n=~a dim=~a~%" n dim)))
+                 (let ((v (llm-protocol:embed-query b "query")))
+                   (unless (and (vectorp v) (plusp (length v)))
+                     (error "embed-query empty"))
+                   (format t "~&   query: dim=~a~%" (length v))))
+            (llm-backend-vllm-cpp:close-vllm-cpp-backend b)))
+      (error (e)
+        (format t "~&   SKIP: ~a~%" e))))
+  t)
+

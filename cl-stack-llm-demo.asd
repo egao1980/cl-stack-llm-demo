@@ -21,6 +21,17 @@
                (:file "agent"))
   :in-order-to ((test-op (test-op "cl-stack-llm-demo/tests"))))
 
+(defsystem "cl-stack-llm-demo/openai"
+  :version "0.1.0"
+  :description "LM Studio OpenAI-compat HTTP backend for cl-stack-llm-demo"
+  :author "egao1980"
+  :license "MIT"
+  :depends-on ("cl-stack-llm-demo" "llm-protocol-openai" "http-backend-async"
+               "event-backend-libuv")
+  :serial t
+  :pathname "src"
+  :components ((:file "openai")))
+
 (defsystem "cl-stack-llm-demo/vllm"
   :version "0.1.0"
   :description "Live vllm.cpp backend for cl-stack-llm-demo"

@@ -15,9 +15,22 @@
            #:make-desk-agent
            #:with-demo-loop
            #:find-lmstudio-model
+           #:find-lmstudio-embed-ggufs
            #:list-lmstudio-ggufs
            #:gguf-architecture
            #:*vllm-gguf-architectures*
+           #:*preferred-embed-gguf-names*
+           #:*lmstudio-embed-models*
+           #:lmstudio-embed-models
+           #:split-csv
+           #:parse-dotenv
+           #:apply-dotenv
+           #:find-dotenv
+           #:find-and-apply-dotenv
+           #:with-http-runtime
+           #:make-lmstudio-backend
+           #:run-lmstudio-embed-smoke
+           #:run-vllm-embed-smoke
            #:run-usecase
            #:run-mock
            #:run-live
