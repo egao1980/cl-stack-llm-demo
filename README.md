@@ -61,7 +61,7 @@ What it runs:
 
 ## Embed smoke
 
-Local-only. Hits LM Studio `POST /v1/embeddings` for **bge-m3** and **qwen3-embedding-0.6b**, then tries native `vllm_embed` on the matching GGUFs. Darwin overlay 0.1.1 may refuse embedding checkpoints (not pooling / unknown GGUF family) — those print `SKIP`, not fail. Needs workspace `.env` (`LM_API_TOKEN` / `OPENAI_*`).
+Local-only. Hits LM Studio `POST /v1/embeddings` for **bge-m3** and **qwen3-embedding-0.6b**, then native **llama.cpp** (`libllamastack`) on the matching GGUFs, then `vllm_embed`. vllm.cpp darwin overlay 0.1.1 may refuse embedding checkpoints (`qwen3` / `bert`) — those print `SKIP`. Needs workspace `.env` (`LM_API_TOKEN` / `OPENAI_*`) and a local `llama-cpp` overlay (`scripts/build-llama.sh` or `LLAMA_CPP_NATIVE`).
 
 ```bash
 CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/smoke-embed.lisp
@@ -70,7 +70,8 @@ CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/smoke-embed.lisp
 | Id | Path |
 |----|------|
 | LM Studio | `text-embedding-bge-m3`, `text-embedding-qwen3-embedding-0.6b` |
-| vllm.cpp | `Qwen3-Embedding-0.6B-Q8_0.gguf`, `bge-m3-Q8_0.gguf` |
+| llama.cpp | same GGUFs via `llm-backend-llama-cpp` |
+| vllm.cpp | same GGUFs; overlay 0.1.1 skips `qwen3` / `bert` |
 
 ## Env
 
