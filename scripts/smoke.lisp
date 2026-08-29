@@ -26,6 +26,6 @@
                  (llm-protocol:llm-response-finish-reason r))
          (unless (plusp (length (or (llm-protocol:llm-response-text r) "")))
            (error "empty generate")))
-    (llm-protocol-vllm-cpp:close-vllm-cpp-backend b)))
+    (llm-backend-vllm-cpp:close-vllm-cpp-backend b)))
 (format t "~&SMOKE OK~%")
 (uiop:quit 0)

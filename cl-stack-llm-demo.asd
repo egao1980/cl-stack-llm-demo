@@ -26,7 +26,7 @@
   :description "Live vllm.cpp backend for cl-stack-llm-demo"
   :author "egao1980"
   :license "MIT"
-  :depends-on ("cl-stack-llm-demo" "llm-protocol-vllm-cpp" "vllm-cpp")
+  :depends-on ("cl-stack-llm-demo" "llm-backend-vllm-cpp" "vllm-cpp")
   :serial t
   :pathname "src"
   :components ((:file "vllm")))
