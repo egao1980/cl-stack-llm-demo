@@ -1,6 +1,6 @@
 # cl-stack-llm-demo
 
-Canary for [`llm-backend-vllm-cpp`](https://github.com/egao1980/llm-protocol-vllm-cpp): native **vllm.cpp** + an **MCP** tool that **samples** + an **`ai-agent-protocol`** desk agent.
+Canary for [`llm-backend-vllm-cpp`](https://github.com/egao1980/llm-backend-vllm-cpp): native **vllm.cpp** + an **MCP** tool that **samples** + an **`ai-agent-protocol`** desk agent.
 
 ```
 LM Studio GGUF ──► vllm.cpp ──► llm-backend-vllm-cpp
