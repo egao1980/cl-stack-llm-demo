@@ -1,6 +1,8 @@
 # cl-stack-llm-demo
 
-Canary for [`llm-backend-vllm-cpp`](https://github.com/egao1980/llm-backend-vllm-cpp): native **vllm.cpp** + an **MCP** tool that **samples** + an **`ai-agent-protocol`** desk agent.
+Public canary for [`llm-backend-vllm-cpp`](https://github.com/egao1980/llm-backend-vllm-cpp): native **vllm.cpp** + an **MCP** tool that **samples** + an **`ai-agent-protocol`** desk agent.
+
+Clone this repo only. Deps come from [`ghcr.io/egao1980/cl-systems`](https://github.com/egao1980/cl-systems) via [`cl-repository-client`](https://github.com/egao1980/cl-repository) walking the `.asd`. No sibling checkouts.
 
 ```
 LM Studio GGUF ──► vllm.cpp ──► llm-backend-vllm-cpp
@@ -13,14 +15,28 @@ LM Studio GGUF ──► vllm.cpp ──► llm-backend-vllm-cpp
      agent "desk" ── lookup_order / lookup_kb (CL) + draft_reply (MCP)
 ```
 
-`cl-stack-llm-demo` itself does **not** depend on `vllm-cpp` (that would pull the linux/amd64 CUDA overlay). Live path is `cl-stack-llm-demo/vllm`. Local-only — no GitHub Actions.
+`cl-stack-llm-demo` itself does **not** depend on `vllm-cpp` (that would pull the linux/amd64 CUDA overlay on every install). Live path is `cl-stack-llm-demo/vllm`; `scripts/install.lisp` walks both systems.
+
+## Prereqs
+
+| Tool | Notes |
+|------|--------|
+| [Roswell](https://roswell.github.io/) + SBCL | `ros install sbcl-bin` |
+| [oras](https://oras.land/) | client + package pull |
+
+## Install
+
+```bash
+git clone https://github.com/egao1980/cl-stack-llm-demo
+cd cl-stack-llm-demo
+./scripts/setup-client.sh      # cl-repository-client → ./.cl-repository
+ros -l scripts/install.lisp    # .asd deps from GHCR (incl. vllm-cpp overlay)
+```
 
 ## Mock (no GPU)
 
 ```bash
-CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/run-mock.lisp
-# or
-CL_SOURCE_REGISTRY="$PWD/../:" ros -e '(asdf:test-system "cl-stack-llm-demo")' -q
+ros -l scripts/run-mock.lisp
 ```
 
 ## Live (Mac + LM Studio GGUF)
@@ -32,18 +48,9 @@ Picks an LM Studio GGUF this **libvllm overlay can actually load**. `vllm-cpp:0.
 mkdir -p ~/.lmstudio/models/lmstudio-community/Qwen3.5-2B-GGUF
 curl -L -o ~/.lmstudio/models/lmstudio-community/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf \
   https://huggingface.co/lmstudio-community/Qwen3.5-2B-GGUF/resolve/main/Qwen3.5-2B-Q4_K_M.gguf
-```
 
-Needs `libvllm` (OCI overlay `vllm-cpp:0.1.1` darwin/arm64, or `VLLM_CPP_NATIVE`).
-
-```bash
-# one-time overlay into the sibling checkout (gitignored):
-oras pull ghcr.io/egao1980/cl-systems/vllm-cpp:0.1.1 --platform darwin/arm64 -o /tmp/vllm-cpp-oci
-tar -xzf /tmp/vllm-cpp-oci/native-library.tar.gz -C /tmp/vllm-cpp-native
-cp /tmp/vllm-cpp-native/vllm-cpp-0.1.1/native/* ../vllm-cpp/native/
-
-CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/smoke.lisp   # generate pong
-CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/demo.lisp    # generate + sampling + agent
+ros -l scripts/smoke.lisp   # generate pong
+ros -l scripts/demo.lisp    # generate + sampling + agent
 ```
 
 What it runs:
@@ -64,7 +71,8 @@ What it runs:
 |----------|---------|
 | `VLLM_MODEL_PATH` | GGUF or HF dir |
 | `VLLM_DEVICE` | `auto` / `cpu` / `cuda` |
-| `VLLM_CPP_NATIVE` | directory with `libvllm.dylib` |
+| `VLLM_CPP_NATIVE` | directory with `libvllm.dylib` (optional; overlay is enough) |
+| `CL_REPOSITORY_CLIENT_DIR` | already-extracted client tree |
 
 Part of [cl-stack](https://github.com/egao1980/cl-stack).
 
