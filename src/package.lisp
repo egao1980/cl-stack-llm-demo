@@ -31,9 +31,11 @@
            #:make-lmstudio-backend
            #:run-lmstudio-embed-smoke
            #:run-vllm-embed-smoke
+           #:run-llama-embed-smoke
            #:run-usecase
            #:run-mock
            #:run-live
-           #:make-vllm-backend))
+           #:make-vllm-backend
+           #:make-llama-backend))
 
 (in-package #:cl-stack-llm-demo)

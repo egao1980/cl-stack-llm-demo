@@ -42,6 +42,16 @@
   :pathname "src"
   :components ((:file "vllm")))
 
+(defsystem "cl-stack-llm-demo/llama"
+  :version "0.1.0"
+  :description "Live llama.cpp backend for cl-stack-llm-demo"
+  :author "egao1980"
+  :license "MIT"
+  :depends-on ("cl-stack-llm-demo" "llm-backend-llama-cpp" "llama-cpp")
+  :serial t
+  :pathname "src"
+  :components ((:file "llama")))
+
 (defsystem "cl-stack-llm-demo/tests"
   :depends-on ("cl-stack-llm-demo" "rove")
   :pathname "tests"

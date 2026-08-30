@@ -1,4 +1,4 @@
-;;;; Live embed canary: LM Studio /v1/embeddings (bge + qwen) then vllm.cpp GGUFs.
+;;;; Live embed canary: LM Studio /v1/embeddings (bge + qwen), then llama.cpp, then vllm.cpp.
 ;;;;
 ;;;;   CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/smoke-embed.lisp
 ;;;;
@@ -23,10 +23,15 @@
 (cl-stack-llm-demo:with-http-runtime
   (cl-stack-llm-demo:run-lmstudio-embed-smoke))
 
-(asdf:load-system "cl-stack-llm-demo/vllm")
-(format t "~&vllm-available=~s ggufs=~s~%"
-        (vllm-cpp:vllm-available-p)
+(asdf:load-system "cl-stack-llm-demo/llama")
+(format t "~&llama-available=~s ggufs=~s~%"
+        (llama-cpp:llama-available-p)
         (cl-stack-llm-demo:find-lmstudio-embed-ggufs))
+(cl-stack-llm-demo:run-llama-embed-smoke)
+
+(asdf:load-system "cl-stack-llm-demo/vllm")
+(format t "~&vllm-available=~s~%"
+        (vllm-cpp:vllm-available-p))
 (cl-stack-llm-demo:run-vllm-embed-smoke)
 
 (format t "~&SMOKE OK~%")
