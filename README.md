@@ -49,8 +49,9 @@ mkdir -p ~/.lmstudio/models/lmstudio-community/Qwen3.5-2B-GGUF
 curl -L -o ~/.lmstudio/models/lmstudio-community/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf \
   https://huggingface.co/lmstudio-community/Qwen3.5-2B-GGUF/resolve/main/Qwen3.5-2B-Q4_K_M.gguf
 
-ros -l scripts/smoke.lisp   # generate pong
-ros -l scripts/demo.lisp    # generate + sampling + agent
+ros -l scripts/smoke.lisp         # generate pong
+ros -l scripts/smoke-embed.lisp   # embed: LM Studio + vllm.cpp
+ros -l scripts/demo.lisp          # generate + sampling + agent
 ```
 
 What it runs:
@@ -65,14 +66,31 @@ What it runs:
 | `refund` | order 1002 wrong SKU |
 | `password-reset` | locked out, no order |
 
+## Embed smoke
+
+Local-only. Hits LM Studio `POST /v1/embeddings` for **bge-m3** and **qwen3-embedding-0.6b**, then tries native `vllm_embed` on the matching GGUFs. Darwin overlay 0.1.1 may refuse embedding checkpoints (not pooling / unknown GGUF family) — those print `SKIP`, not fail. Needs workspace `.env` (`LM_API_TOKEN` / `OPENAI_*`).
+
+```bash
+CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/smoke-embed.lisp
+```
+
+| Id | Path |
+|----|------|
+| LM Studio | `text-embedding-bge-m3`, `text-embedding-qwen3-embedding-0.6b` |
+| vllm.cpp | `Qwen3-Embedding-0.6B-Q8_0.gguf`, `bge-m3-Q8_0.gguf` |
+
 ## Env
 
 | Variable | Meaning |
 |----------|---------|
 | `VLLM_MODEL_PATH` | GGUF or HF dir |
+| `VLLM_EMBED_MODEL_PATH` | comma-separated embed GGUFs |
 | `VLLM_DEVICE` | `auto` / `cpu` / `cuda` |
 | `VLLM_CPP_NATIVE` | directory with `libvllm.dylib` (optional; overlay is enough) |
 | `CL_REPOSITORY_CLIENT_DIR` | already-extracted client tree |
+| `LLM_DEMO_ENV` | path to a `.env` |
+| `LM_EMBED_MODELS` | comma-separated LM Studio embedding ids |
+| `OPENAI_BASE_URL` / `OPENAI_API_KEY` / `LM_API_TOKEN` | LM Studio `/v1` |
 
 Part of [cl-stack](https://github.com/egao1980/cl-stack).
 

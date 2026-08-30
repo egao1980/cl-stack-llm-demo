@@ -36,6 +36,28 @@
       (ok (eq :done (agent-invocation-status draft)))
       (ok (search "DRAFT:" (agent-invocation-result draft))))))
 
+(deftest parse-dotenv-alist
+  (let ((pairs (parse-dotenv (format nil "LM_API_TOKEN=sk-lm-x~%# c~%export OPENAI_MODEL=\"foo\"~%"))))
+    (ok (equal "sk-lm-x" (cdr (assoc "LM_API_TOKEN" pairs :test #'equal))))
+    (ok (equal "foo" (cdr (assoc "OPENAI_MODEL" pairs :test #'equal))))))
+
+(deftest split-csv-and-embed-models
+  (ok (equal '("a" "b") (split-csv "a, b")))
+  (ok (null (split-csv "  ")))
+  (ok (equal '("text-embedding-bge-m3" "text-embedding-qwen3-embedding-0.6b")
+             *lmstudio-embed-models*)))
+
+(deftest lmstudio-embed-gguf-discovery
+  (let ((paths (find-lmstudio-embed-ggufs)))
+    (if paths
+        (ok (every (lambda (p) (or (probe-file p) (uiop:file-exists-p p))) paths))
+        (skip "no preferred embed GGUF on this machine"))))
+
+(deftest mock-embed-query
+  (let ((v (embed-query (make-mock-llm-backend) "z" :dimensions 8)))
+    (ok (vectorp v))
+    (ok (= 8 (length v)))))
+
 (deftest lmstudio-discovery
   (let ((path (find-lmstudio-model)))
     (if path
