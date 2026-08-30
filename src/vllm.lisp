@@ -7,7 +7,7 @@
                   :model-path path
                   :device (or device (vllm-cpp:default-device))
                   :max-model-len max-model-len)))
-    (llm-protocol-vllm-cpp:make-vllm-cpp-backend
+    (llm-backend-vllm-cpp:make-vllm-cpp-backend
      :model-path path
      :device (vllm-cpp:engine-device engine)
      :engine engine)))
@@ -21,7 +21,7 @@
     (unless path
       (error "no GGUF — set VLLM_MODEL_PATH or install an LM Studio chat model"))
     (format t "~&live: model=~a device=~s~%"
-            path (llm-protocol-vllm-cpp:vllm-cpp-device backend))
+            path (llm-backend-vllm-cpp:vllm-cpp-device backend))
     (unwind-protect
          (let ((*host-client* (make-host-client :backend backend)))
            (multiple-value-bind (agent server client)
@@ -53,4 +53,4 @@
                    (error (e)
                      (format t "~&usecase ~a FAIL: ~a~%" (getf uc :id) e)))))
              t))
-      (llm-protocol-vllm-cpp:close-vllm-cpp-backend backend))))
+      (llm-backend-vllm-cpp:close-vllm-cpp-backend backend))))

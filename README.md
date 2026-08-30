@@ -1,11 +1,11 @@
 # cl-stack-llm-demo
 
-Public canary for [`llm-protocol-vllm-cpp`](https://github.com/egao1980/llm-protocol-vllm-cpp): native **vllm.cpp** + an **MCP** tool that **samples** + an **`ai-agent-protocol`** desk agent.
+Public canary for [`llm-backend-vllm-cpp`](https://github.com/egao1980/llm-backend-vllm-cpp): native **vllm.cpp** + an **MCP** tool that **samples** + an **`ai-agent-protocol`** desk agent.
 
 Clone this repo only. Deps come from [`ghcr.io/egao1980/cl-systems`](https://github.com/egao1980/cl-systems) via [`cl-repository-client`](https://github.com/egao1980/cl-repository) walking the `.asd`. No sibling checkouts.
 
 ```
-LM Studio GGUF ──► vllm.cpp ──► llm-protocol-vllm-cpp
+LM Studio GGUF ──► vllm.cpp ──► llm-backend-vllm-cpp
                                     │
                          GENERATE ──┤
                                     │
