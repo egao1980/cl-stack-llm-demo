@@ -1,6 +1,8 @@
 ;;;; Offline mock canary (no libvllm).
-;;;;
-;;;;   CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/run-mock.lisp
+;;;;   ./scripts/setup-client.sh && ros -l scripts/install.lisp
+;;;;   ros -l scripts/run-mock.lisp
+
+(load (merge-pathnames "bootstrap.lisp" *load-truename*))
 
 (setf *debugger-hook*
       (lambda (c h)
@@ -10,7 +12,6 @@
         (uiop:quit 1)))
 
 (asdf:load-system "cl-stack-llm-demo")
-
 (cl-stack-llm-demo:run-mock)
 (format t "~&MOCK OK~%")
 (uiop:quit 0)
