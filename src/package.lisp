@@ -15,8 +15,10 @@
            #:make-desk-agent
            #:with-demo-loop
            #:find-lmstudio-model
+           #:find-llama-chat-model
            #:find-lmstudio-embed-ggufs
            #:list-lmstudio-ggufs
+           #:*preferred-chat-gguf-names*
            #:gguf-architecture
            #:*vllm-gguf-architectures*
            #:*preferred-embed-gguf-names*
@@ -36,6 +38,13 @@
            #:run-mock
            #:run-live
            #:make-vllm-backend
-           #:make-llama-backend))
+           #:make-llama-backend
+           #:make-llama-chat-backend
+           #:workspace-root
+           #:demo-skill-root
+           #:make-workspace-steering
+           #:*steer-demo-prompt*
+           #:run-steer-mock
+           #:run-steer-llama))
 
 (in-package #:cl-stack-llm-demo)

@@ -87,6 +87,12 @@
     "Qwen3.5-0.8B-Q4_K_M.gguf"
     "Qwen3.5-0.8B-Q4_0.gguf"))
 
+(defparameter *preferred-chat-gguf-names*
+  '("Qwen3.5-0.8B-Q4_K_M.gguf"
+    "Qwen3.5-0.8B-Q4_0.gguf"
+    "Qwen3.5-2B-Q4_K_M.gguf"
+    "Qwen3.5-2B-Q4_0.gguf"))
+
 (defparameter *preferred-embed-gguf-names*
   '("Qwen3-Embedding-0.6B-Q8_0.gguf"
     "bge-m3-Q8_0.gguf"))
@@ -148,6 +154,19 @@
                   when hit return (namestring hit))
             (when compat
               (namestring (first (sort (copy-list compat) #'<
+                                       :key (lambda (p) (or (%file-size p) most-positive-fixnum))))))))))
+
+(defun find-llama-chat-model (&key (prefer *preferred-chat-gguf-names*))
+  "Chat GGUF for native llama.cpp. LLAMA_MODEL_PATH / LLAMA_CPP_MODEL win.
+   Prefers small Qwen instruct files. Does not filter by vllm family."
+  (or (%env "LLAMA_MODEL_PATH")
+      (%env "LLAMA_CPP_MODEL")
+      (let ((files (remove-if #'%skip-gguf-p (list-lmstudio-ggufs))))
+        (or (loop for name in prefer
+                  for hit = (find name files :test #'string-equal :key #'file-namestring)
+                  when hit return (namestring hit))
+            (when files
+              (namestring (first (sort (copy-list files) #'<
                                        :key (lambda (p) (or (%file-size p) most-positive-fixnum))))))))))
 
 (defun %assert-embed-result (r label)

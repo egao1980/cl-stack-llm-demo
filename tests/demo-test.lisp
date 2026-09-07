@@ -64,3 +64,22 @@
         (ok (or (probe-file path)
                 (uiop:file-exists-p path)))
         (skip "no LM Studio GGUF on this machine"))))
+
+(deftest steer-loads-rules-and-review-skill
+  (let* ((src (make-workspace-steering))
+         (names (mapcar #'steer-protocol:steer-directive-name
+                        (steer-protocol:list-directives src)))
+         (compiled (steer-protocol:compile-steering src)))
+    (ok (find "cite-packages" names :test #'equal))
+    (ok (find "oci-pins" names :test #'equal))
+    (ok (find "review-lisp" names :test #'equal))
+    (ok (search "cite-packages" compiled))
+    (ok (search "Rove" compiled))))
+
+(deftest steer-mock-merges-system
+  (let ((run (run-steer-mock)))
+    (ok (eq :stop (agent-run-finish-reason run)))
+    (let ((sys (find :system (agent-run-turns run) :key #'llm-turn-role)))
+      (ok sys)
+      (ok (search "cite-packages" (turn-text sys)))
+      (ok (search "review-lisp" (turn-text sys))))))
