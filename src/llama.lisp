@@ -10,13 +10,15 @@
      :engine (llama-cpp:load-engine :model-path path :n-ctx n-ctx))))
 
 (defun make-llama-chat-backend (&key model-path (n-ctx 2048))
-  "Chat GGUF (not an embedder). Default ctx fits a few workspace SKILL.md files."
+  "Chat GGUF (not an embedder). Default ctx fits a few workspace SKILL.md files.
+   :chat-template :auto → ChatML for Qwen, Llama-3 headers for llama3, else plain."
   (let ((path (or model-path (find-llama-chat-model))))
     (unless path
       (error "no chat GGUF — set LLAMA_MODEL_PATH"))
     (llm-backend-llama-cpp:make-llama-cpp-backend
      :model-path path
      :n-ctx n-ctx
+     :chat-template :auto
      :engine (llama-cpp:load-engine :model-path path :n-ctx n-ctx))))
 
 (defun run-llama-embed-smoke (&key (paths (find-lmstudio-embed-ggufs))
