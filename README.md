@@ -66,6 +66,25 @@ What it runs:
 | `refund` | order 1002 wrong SKU |
 | `password-reset` | locked out, no order |
 
+## Workspace steer + llama.cpp
+
+Loads `steer-protocol` rules + `SKILL.md` (demo `skills/review-lisp` and selected `.lisp-workspace/skills`) onto an `ai-agent` `:steering` slot, then `generate`s through native **llama.cpp**. **Not** A2A `agent-skill`. No tools on this path (one generate).
+
+Does **not** use `scripts/bootstrap.lisp` — that ignores inherited ASDF. Run from the workspace tree:
+
+```bash
+cd /path/to/cl-workspace
+CL_SOURCE_REGISTRY="$PWD//:" ros -l cl-stack-llm-demo/scripts/steer-llama.lisp
+```
+
+Mock (no GGUF):
+
+```bash
+STEER_MOCK=1 CL_SOURCE_REGISTRY="$PWD//:" ros -l cl-stack-llm-demo/scripts/steer-llama.lisp
+```
+
+Default skills: `asdf`, `rove`, `common-lisp-workspace`. Override with `STEER_SKILLS`. Chat GGUF: `LLAMA_MODEL_PATH` or a small Qwen in `~/.lmstudio/models`.
+
 ## Embed smoke
 
 Local-only. Hits LM Studio `POST /v1/embeddings` for **bge-m3** and **qwen3-embedding-0.6b**, then native **llama.cpp** (`libllamastack`) on the matching GGUFs, then `vllm_embed`. vllm.cpp darwin overlay 0.1.1 may refuse embedding checkpoints (`qwen3` / `bert`) — those print `SKIP`. Needs workspace `.env` (`LM_API_TOKEN` / `OPENAI_*`) and a local `llama-cpp` overlay (`scripts/build-llama.sh` or `LLAMA_CPP_NATIVE`).
@@ -92,6 +111,12 @@ CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/smoke-embed.lisp
 | `LLM_DEMO_ENV` | path to a `.env` |
 | `LM_EMBED_MODELS` | comma-separated LM Studio embedding ids |
 | `OPENAI_BASE_URL` / `OPENAI_API_KEY` / `LM_API_TOKEN` | LM Studio `/v1` |
+| `LLAMA_MODEL_PATH` / `LLAMA_CPP_MODEL` | chat GGUF for `scripts/steer-llama.lisp` |
+| `LLAMA_N_CTX` | llama ctx (default 2048) |
+| `STEER_MOCK` | `1` = no GGUF |
+| `STEER_SKILLS` | comma-separated workspace skill names (default `asdf,rove,common-lisp-workspace`) |
+| `STEER_SKILL_ROOTS` | comma-separated skill trees |
+| `CL_WORKSPACE` | workspace root if the demo is not a sibling |
 
 Part of [cl-stack](https://github.com/egao1980/cl-stack).
 

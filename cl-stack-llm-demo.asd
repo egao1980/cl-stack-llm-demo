@@ -11,14 +11,16 @@
                "event-protocol"
                "event-backend-libuv"
                "json-protocol"
-               "json-backend-jzon")
+               "json-backend-jzon"
+               "steer-protocol")
   :serial t
   :pathname "src"
   :components ((:file "package")
                (:file "fixture")
                (:file "models")
                (:file "mcp")
-               (:file "agent"))
+               (:file "agent")
+               (:file "steer"))
   :in-order-to ((test-op (test-op "cl-stack-llm-demo/tests"))))
 
 (defsystem "cl-stack-llm-demo/openai"
