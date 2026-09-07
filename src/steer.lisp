@@ -133,8 +133,11 @@
                     (run (ai-agent-protocol:run-ai-agent
                           agent prompt
                           :settings (ai-agent-protocol:make-agent-settings
-                                     :llm (llm-protocol:make-llm-settings
-                                           :temperature 0 :max-tokens max-tokens)
+                                     :llm (uiop:symbol-call
+                                           :llm-backend-llama-cpp :llama-cpp-settings
+                                           :temperature 0
+                                           :max-tokens max-tokens
+                                           :chat-template :auto)
                                      :max-steps 1)
                           :on-event #'on-event)))
                (format t "~&desk: ~a~%" (or (ai-agent-protocol:agent-run-text run) ""))

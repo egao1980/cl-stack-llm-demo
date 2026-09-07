@@ -68,7 +68,7 @@ What it runs:
 
 ## Workspace steer + llama.cpp
 
-Loads `steer-protocol` rules + `SKILL.md` (demo `skills/review-lisp` and selected `.lisp-workspace/skills`) onto an `ai-agent` `:steering` slot, then `generate`s through native **llama.cpp**. **Not** A2A `agent-skill`. No tools on this path (one generate).
+Loads `steer-protocol` rules + `SKILL.md` (demo `skills/review-lisp` and selected `.lisp-workspace/skills`) onto an `ai-agent` `:steering` slot, then `generate`s through native **llama.cpp**. **Not** A2A `agent-skill`. No tools on this path (one generate). Chat turns use `llm-backend-llama-cpp` `:chat-template :auto` (Qwen → ChatML).
 
 Does **not** use `scripts/bootstrap.lisp` — that ignores inherited ASDF. Run from the workspace tree:
 
