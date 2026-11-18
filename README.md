@@ -40,7 +40,7 @@ cl-repo run -- ros -l scripts/run-mock.lisp
 
 ## Live (Mac + LM Studio GGUF)
 
-Picks an LM Studio GGUF this **libvllm overlay can actually load**. `vllm-cpp:0.1.1` darwin only speaks GGUF families `qwen35` / `qwen35moe` / `qwen3next` / `deepseek4` / `muse-glimmer`. Local Nemotron (`nemotron_h` + ggml type 6), Gemma, and OCR files are skipped. Prefers **Qwen3.5-2B Q4_K_M** (~1.2GB; 0.8B is the fallback). Override with `VLLM_MODEL_PATH`.
+Picks an LM Studio GGUF this **libvllm overlay can actually load**. The vllm-cpp darwin overlay (0.2.2, C ABI 30; verified with Qwen3.5-2B Q4_K_M) loads GGUF families `qwen35` / `qwen35moe` / `qwen3next` / `deepseek4` / `muse-glimmer`. Local Nemotron (`nemotron_h` + ggml type 6), Gemma, and OCR files are skipped. Prefers **Qwen3.5-2B Q4_K_M** (~1.2GB; 0.8B is the fallback). Override with `VLLM_MODEL_PATH`.
 
 ```bash
 # if you only have Nemotron/Gemma downloaded:
@@ -78,7 +78,7 @@ Default skills: `asdf`, `rove`, `common-lisp-workspace`. Override with `STEER_SK
 
 ## Embed smoke
 
-Local-only. Hits LM Studio `POST /v1/embeddings` for **bge-m3** and **qwen3-embedding-0.6b**, then native **llama.cpp** (`libllamastack`) on the matching GGUFs, then `vllm_embed`. vllm.cpp darwin overlay 0.1.1 may refuse embedding checkpoints (`qwen3` / `bert`) — those print `SKIP`. Needs workspace `.env` (`LM_API_TOKEN` / `OPENAI_*`) and a local `llama-cpp` overlay (`scripts/build-llama.sh` or `LLAMA_CPP_NATIVE`).
+Local-only. Hits LM Studio `POST /v1/embeddings` for **bge-m3** and **qwen3-embedding-0.6b**, then native **llama.cpp** (`libllamastack`) on the matching GGUFs, then `vllm_embed`. The vllm.cpp darwin overlay may refuse embedding checkpoints (`qwen3` / `bert`) — those print `SKIP`. Needs workspace `.env` (`LM_API_TOKEN` / `OPENAI_*`) and a local `llama-cpp` overlay (`scripts/build-llama.sh` or `LLAMA_CPP_NATIVE`).
 
 ```bash
 cl-repo run -- ros -l scripts/smoke-embed.lisp
@@ -88,7 +88,7 @@ cl-repo run -- ros -l scripts/smoke-embed.lisp
 |----|------|
 | LM Studio | `text-embedding-bge-m3`, `text-embedding-qwen3-embedding-0.6b` |
 | llama.cpp | same GGUFs via `llm-backend-llama-cpp` |
-| vllm.cpp | same GGUFs; overlay 0.1.1 skips `qwen3` / `bert` |
+| vllm.cpp | same GGUFs; the overlay may skip `qwen3` / `bert` |
 
 ## Env
 
