@@ -1,11 +1,9 @@
 ;;;; Workspace llama.cpp + steer-protocol demo.
-;;;; Does NOT use bootstrap.lisp (that ignores inherited ASDF).
 ;;;;
-;;;;   cd /path/to/cl-workspace
-;;;;   CL_SOURCE_REGISTRY="$PWD//:" ros -l cl-stack-llm-demo/scripts/steer-llama.lisp
+;;;;   cl-repo run -- ros -l scripts/steer-llama.lisp
 ;;;;
 ;;;; Mock (no GGUF):
-;;;;   STEER_MOCK=1 CL_SOURCE_REGISTRY="$PWD//:" ros -l cl-stack-llm-demo/scripts/steer-llama.lisp
+;;;;   STEER_MOCK=1 cl-repo run -- ros -l scripts/steer-llama.lisp
 ;;;;
 ;;;; Env: LLAMA_MODEL_PATH  LLAMA_N_CTX  STEER_SKILLS  STEER_SKILL_ROOTS  CL_WORKSPACE
 

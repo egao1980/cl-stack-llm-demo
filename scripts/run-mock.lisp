@@ -1,8 +1,6 @@
 ;;;; Offline mock canary (no libvllm).
-;;;;   ./scripts/setup-client.sh && ros -l scripts/install.lisp
-;;;;   ros -l scripts/run-mock.lisp
-
-(load (merge-pathnames "bootstrap.lisp" *load-truename*))
+;;;;   cl-repo sync
+;;;;   cl-repo run -- ros -l scripts/run-mock.lisp
 
 (setf *debugger-hook*
       (lambda (c h)

@@ -1,9 +1,6 @@
 ;;;; Load vllm.cpp + one short generate.
-;;;;   ./scripts/setup-client.sh && ros -l scripts/install.lisp
-;;;;   ros -l scripts/smoke.lisp
-
-(load (merge-pathnames "bootstrap.lisp" *load-truename*))
-(load-demo-init-files :live t)
+;;;;   cl-repo sync
+;;;;   cl-repo run -- ros -l scripts/smoke.lisp
 
 (setf *debugger-hook*
       (lambda (c h)
