@@ -1,6 +1,6 @@
 ;;;; Live embed canary: LM Studio /v1/embeddings (bge + qwen), then llama.cpp, then vllm.cpp.
 ;;;;
-;;;;   CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/smoke-embed.lisp
+;;;;   cl-repo run -- ros -l scripts/smoke-embed.lisp
 ;;;;
 ;;;; Loads workspace .env (LM_API_TOKEN / OPENAI_*). vllm load/arch refusals SKIP.
 

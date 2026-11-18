@@ -1,11 +1,8 @@
 ;;;; Live vllm.cpp + MCP sampling + support-desk agent.
-;;;;   ./scripts/setup-client.sh && ros -l scripts/install.lisp
-;;;;   ros -l scripts/demo.lisp
+;;;;   cl-repo sync
+;;;;   cl-repo run -- ros -l scripts/demo.lisp
 ;;;;
 ;;;; Optional: VLLM_MODEL_PATH=/path/to/model.gguf  VLLM_DEVICE=auto
-
-(load (merge-pathnames "bootstrap.lisp" *load-truename*))
-(load-demo-init-files :live t)
 
 (setf *debugger-hook*
       (lambda (c h)

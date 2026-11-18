@@ -2,7 +2,7 @@
 
 Public canary for [`llm-backend-vllm-cpp`](https://github.com/egao1980/llm-backend-vllm-cpp): native **vllm.cpp** + an **MCP** tool that **samples** + an **`ai-agent-protocol`** desk agent.
 
-Clone this repo only. Deps come from [`ghcr.io/egao1980/cl-systems`](https://github.com/egao1980/cl-systems) via [`cl-repository-client`](https://github.com/egao1980/cl-repository) walking the `.asd`. No sibling checkouts.
+Clone this repo only. `cl-repo` installs the dependencies from [`ghcr.io/egao1980/cl-systems`](https://github.com/egao1980/cl-systems) by walking the `.asd`. No sibling checkouts.
 
 ```
 LM Studio GGUF ──► vllm.cpp ──► llm-backend-vllm-cpp
@@ -15,28 +15,27 @@ LM Studio GGUF ──► vllm.cpp ──► llm-backend-vllm-cpp
      agent "desk" ── lookup_order / lookup_kb (CL) + draft_reply (MCP)
 ```
 
-`cl-stack-llm-demo` itself does **not** depend on `vllm-cpp` (that would pull the linux/amd64 CUDA overlay on every install). Live path is `cl-stack-llm-demo/vllm`; `scripts/install.lisp` walks both systems.
+`cl-stack-llm-demo` itself does **not** depend on `vllm-cpp`; the live path is `cl-stack-llm-demo/vllm`. `cl-repo sync` (client 0.27.17 or later) installs the dependencies of every system in the `.asd`, so it also pulls the vllm-cpp overlay for this platform. On linux/amd64 that overlay is the CUDA build. Without the NVIDIA driver it loads as unavailable, and `vllm-available-p` returns NIL.
 
 ## Prereqs
 
 | Tool | Notes |
 |------|--------|
 | [Roswell](https://roswell.github.io/) + SBCL | `ros install sbcl-bin` |
-| [oras](https://oras.land/) | client + package pull |
+| `cl-repo` | `curl -fsSL https://raw.githubusercontent.com/egao1980/cl-repository/main/install.sh \| bash` (needs [oras](https://oras.land/) and python3) |
 
 ## Install
 
 ```bash
 git clone https://github.com/egao1980/cl-stack-llm-demo
 cd cl-stack-llm-demo
-./scripts/setup-client.sh      # cl-repository-client → ./.cl-repository
-ros -l scripts/install.lisp    # .asd deps from GHCR (incl. vllm-cpp overlay)
+cl-repo sync                   # .asd deps from GHCR (incl. the vllm-cpp overlay)
 ```
 
 ## Mock (no GPU)
 
 ```bash
-ros -l scripts/run-mock.lisp
+cl-repo run -- ros -l scripts/run-mock.lisp
 ```
 
 ## Live (Mac + LM Studio GGUF)
@@ -49,9 +48,9 @@ mkdir -p ~/.lmstudio/models/lmstudio-community/Qwen3.5-2B-GGUF
 curl -L -o ~/.lmstudio/models/lmstudio-community/Qwen3.5-2B-GGUF/Qwen3.5-2B-Q4_K_M.gguf \
   https://huggingface.co/lmstudio-community/Qwen3.5-2B-GGUF/resolve/main/Qwen3.5-2B-Q4_K_M.gguf
 
-ros -l scripts/smoke.lisp         # generate pong
-ros -l scripts/smoke-embed.lisp   # embed: LM Studio + vllm.cpp
-ros -l scripts/demo.lisp          # generate + sampling + agent
+cl-repo run -- ros -l scripts/smoke.lisp         # generate pong
+cl-repo run -- ros -l scripts/smoke-embed.lisp   # embed: LM Studio + vllm.cpp
+cl-repo run -- ros -l scripts/demo.lisp          # generate + sampling + agent
 ```
 
 What it runs:
@@ -70,17 +69,9 @@ What it runs:
 
 Loads `steer-protocol` rules + `SKILL.md` (demo `skills/review-lisp` and selected `.lisp-workspace/skills`) onto an `ai-agent` `:steering` slot, then `generate`s through native **llama.cpp**. **Not** A2A `agent-skill`. No tools on this path (one generate). Chat turns use `llm-backend-llama-cpp` `:chat-template :auto` (Qwen → ChatML).
 
-Does **not** use `scripts/bootstrap.lisp` — that ignores inherited ASDF. Run from the workspace tree:
-
 ```bash
-cd /path/to/cl-workspace
-CL_SOURCE_REGISTRY="$PWD//:" ros -l cl-stack-llm-demo/scripts/steer-llama.lisp
-```
-
-Mock (no GGUF):
-
-```bash
-STEER_MOCK=1 CL_SOURCE_REGISTRY="$PWD//:" ros -l cl-stack-llm-demo/scripts/steer-llama.lisp
+cl-repo run -- ros -l scripts/steer-llama.lisp
+STEER_MOCK=1 cl-repo run -- ros -l scripts/steer-llama.lisp   # mock, no GGUF
 ```
 
 Default skills: `asdf`, `rove`, `common-lisp-workspace`. Override with `STEER_SKILLS`. Chat GGUF: `LLAMA_MODEL_PATH` or a small Qwen in `~/.lmstudio/models`.
@@ -90,7 +81,7 @@ Default skills: `asdf`, `rove`, `common-lisp-workspace`. Override with `STEER_SK
 Local-only. Hits LM Studio `POST /v1/embeddings` for **bge-m3** and **qwen3-embedding-0.6b**, then native **llama.cpp** (`libllamastack`) on the matching GGUFs, then `vllm_embed`. vllm.cpp darwin overlay 0.1.1 may refuse embedding checkpoints (`qwen3` / `bert`) — those print `SKIP`. Needs workspace `.env` (`LM_API_TOKEN` / `OPENAI_*`) and a local `llama-cpp` overlay (`scripts/build-llama.sh` or `LLAMA_CPP_NATIVE`).
 
 ```bash
-CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/smoke-embed.lisp
+cl-repo run -- ros -l scripts/smoke-embed.lisp
 ```
 
 | Id | Path |
@@ -107,7 +98,6 @@ CL_SOURCE_REGISTRY="$PWD/../:" ros -l scripts/smoke-embed.lisp
 | `VLLM_EMBED_MODEL_PATH` | comma-separated embed GGUFs |
 | `VLLM_DEVICE` | `auto` / `cpu` / `cuda` |
 | `VLLM_CPP_NATIVE` | directory with `libvllm.dylib` (optional; overlay is enough) |
-| `CL_REPOSITORY_CLIENT_DIR` | already-extracted client tree |
 | `LLM_DEMO_ENV` | path to a `.env` |
 | `LM_EMBED_MODELS` | comma-separated LM Studio embedding ids |
 | `OPENAI_BASE_URL` / `OPENAI_API_KEY` / `LM_API_TOKEN` | LM Studio `/v1` |
